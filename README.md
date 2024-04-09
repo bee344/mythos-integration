@@ -30,7 +30,7 @@ And then run the node with:
 
 Currently there are no hardware requirements specific for running a node, since they do not perform time-critical tasks. The only requirement is to have enough storage for the type of node intended, which can be retrieved from [here](https://stakeworld.io/docs/dbsize). Other than that, any relatively performant equipement or any cloud provider will suffice. You can also look into the [reference hardware](https://wiki.polkadot.network/docs/maintain-guides-how-to-validate-polkadot#reference-hardware) for validators, but be aware that these will probably be overkill for a non-validator node.
 
-## Myth Token transfers
+## MYTH Token transfers
 
 Mythos Parachain's native token is **MYTH**, handled by the [`pallet_balances`](https://docs.rs/pallet-balances/latest/pallet_balances/), and is transferred as any other substrate based chain's native token. MYTH Token has 18 decimals and it's existential deposit (the amount of tokens an account must holde before being _reaped_) is 0.001 MYTH.
 
