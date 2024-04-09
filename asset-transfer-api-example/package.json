@@ -1,0 +1,13 @@
+{
+  "name": "asset-transfer-api-examples",
+  "packageManager": "yarn@3.6.1",
+  "scripts": {
+    "build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
+    "allowDeath": "node ./lib/allowDeath.js",
+    "keepAlive": "node ./lib/keepAlive.js"
+  },
+  "devDependencies": {
+    "@substrate/asset-transfer-api": "^0.2.0-beta.0",
+    "@substrate/dev": "^0.7.1"
+  }
+}

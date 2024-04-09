@@ -1,0 +1,16 @@
+[package]
+name = "subxt-examples"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+subxt = "0.34.0"
+subxt-signer = { version = "0.34.0", features = ["subxt"]}
+tokio = { version = "1.36.0", features = ["macros", "time", "rt-multi-thread"] }
+codec = { package = "parity-scale-codec", version = "3.6.9", features = ["derive"] }
+anyhow = { version = "1.0.80", features = ["backtrace"] }
+hex = "0.4.3"
+keccak-hash = "0.10.0"
+secp256k1 = { version = "0.28.2", features = ["recovery", "global-context"] }
