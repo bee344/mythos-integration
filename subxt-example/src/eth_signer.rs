@@ -2,7 +2,6 @@
 // This file is dual-licensed as Apache-2.0 or GPL-3.0.
 // see LICENSE for license details.
 
-//! An ecdsa keypair implementation.
 use hex::FromHex;
 use secp256k1::{ecdsa, Message, Keypair, SecretKey, SECP256K1};
 use keccak_hash::keccak;
@@ -58,9 +57,6 @@ where
     }
 
     fn sign(&self, signer_payload: &[u8]) -> T::Signature {
-        // The below is copied from subxt_signer's ecdsa signing; the only change
-        // is that we hash the message with keccak and not blake2_256, above, to
-        // match what the runtime verification does
 
         let message_hash = keccak(signer_payload);
         let wrapped = Message::from_digest_slice(message_hash.as_bytes()).expect("Message is 32 bytes; qed");

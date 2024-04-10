@@ -3,7 +3,6 @@ mod eth_signer;
 use subxt::OnlineClient;
 
 use eth_signer::{EthereumSigner, EthereumSignature, AccountId20};
-// Metadata that we'll use for our example
 #[subxt::subxt(
     runtime_metadata_path = "./metadata/metadata.scale"
 )]
@@ -22,10 +21,6 @@ impl subxt::Config for EthRuntimeConfig {
     type AssetId = u32;
 }
 
-// This helper makes it easy to use our `eth_signer::AccountId20`'s with generated
-// code that expects a generated `eth_runtime::runtime_types::foo::AccountId20` type.
-// an alternative is to do some type substitution in the generated code itself, but
-// mostly I'd avoid doing that unless absolutely necessary.
 impl From<eth_signer::AccountId20> for eth_runtime::runtime_types::account::AccountId20 {
   fn from(val: eth_signer::AccountId20) -> Self {
       Self(val.0)
@@ -53,8 +48,5 @@ async fn main() {
       .create_signed(&balance_transfer_tx, &alith, Default::default())
       .await.unwrap();
 
-
   println!("Encoded extrinsic: 0x{}", hex::encode(events.encoded()));
-
-  ()
 }
