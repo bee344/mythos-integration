@@ -2,59 +2,66 @@
 
 ## Overview
 
-The Mythos Parachain is meant to be the blockchain platform for Mythos Games.
+This is a guide for entities (such as exchanges) that want to integrate with the Mythos Parachain. The Mythos Parachain is meant to be the blockchain platform for Mythos Games.
 
-### Running a Mythos Parachain node
+This guide will guide you through deploying a Mythos Parachain node alongside a Polkadot Relay Chain node, and then launching an instance of Substrate API Sidecar to retrieve information from the chain, along with some examples on how to use it and tools like `subxt` and `Asset Transfer API` to construct and submit transactions.
 
-Using the Mythos Parachain will require running a parachain node to sync the chain along with a Polkadot node. Running a Mythos Parachain node is very similar to running a Polkadot node, with the addition of some extra flags. You can clone the [`Mythos Parachain` repo](https://github.com/paritytech/project-mythical/tree/main) and build from source with the following commands:
-
-```bash
-git clone https://github.com/paritytech/project-mythical
-cd project-mythical
-cargo build --release
-```
-
-Another alternative is using Docker, this is more advanced, so it's best left up to those already familiar with docker or who have completed the other set-up instructions:
-
-```bash
-docker build -t mythos-node --file ./docker/Dockerfile .
-```
-
-And then run the node with:
-
-```bash
-./target/release/mythos-node
-```
-
-#### Hardware requirements
+### Hardware requirements
 
 Currently there are no hardware requirements specific for running a node, since they do not perform time-critical tasks. The only requirement is to have enough storage for the type of node intended, which can be retrieved from [here](https://stakeworld.io/docs/dbsize) for the Polkadot Relay Chain node. Other than that, any relatively performant equipement or any cloud provider will suffice. You can also look into the [reference hardware](https://wiki.polkadot.network/docs/maintain-guides-how-to-validate-polkadot#reference-hardware) for validators, but be aware that these will probably be overkill for a non-validator node.
 
-## MYTH Token transfers
+### Running a Mythos Parachain node
 
-Mythos Parachain's native token is **MYTH**, handled by the [`pallet_balances`](https://docs.rs/pallet-balances/latest/pallet_balances/), and is transferred as any other substrate based chain's native token. MYTH Token has 18 decimals and its existential deposit (the amount of tokens an account must holde before being _reaped_) is 0.001 MYTH.
+Using the Mythos Parachain will require running a parachain node to sync the chain along with a Polkadot node. Running a Mythos Parachain node is very similar to running a Polkadot node, just with a different binary.
 
-As the Mythos Parachain uses an instance of the `pallet_balances`, its token is handled by the same calls as, for example, DOT, those being:
+1. Clone the [`Mythos Parachain` repo](https://github.com/paritytech/project-mythical/tree/main) and build from source with the following commands:
+  ```bash
+  git clone https://github.com/paritytech/project-mythical
+  cd project-mythical
+  cargo build --release
+  ```
 
-- `transfer_keep_alive`, which has in place checks to only transfer an amount that leaves at least the Existential Deposit in the sender's account.
-- `transfer_allow_death` which does not have the Existential Deposit's checks as the previous call.
-- `transfer_all` which transfers the total balance of an account, causing the account to be reaped.
+  Another alternative is using Docker, this is more advanced, so it's best left up to those already familiar with docker or who have completed the other set-up instructions:
 
-### Transfer Monitoring
+  ```bash
+  docker build -t mythos-node --file ./docker/Dockerfile .
+  ```
 
-#### Monitoring of MYTH deposits
+2. Run the node with:
 
-Currently, MYTH tokens can be sent and received using the calls mentioned previously, and to keep track of the completion of MYTH transfers the service providers need to monitor local transfers and corresponding `balances (Transfer)` event. This event has the fields `from`, `to` and `amount` indicating the origin account, destination account and amount transferred. This event is followed by either `system (ExtrinsicSuccess)` or by `system (ExtrinsicFailed)`, the latter of which in turn has a field `dispatch_error` with the information regarding the reason behind the transfer failure.
+  ```bash
+  ./target/release/mythos-node --chain ./chainspecs/mythos-raw.json
+  ```
+  This will run a Mythos Parachain collator
 
-#### Relevant tooling
+  You can get more info on the different options for how to run the node with:
 
-The Mythos Parachain will come with almost the same tooling suite [provided for the Relay Chain](https://wiki.polkadot.network/docs/build-integration#recommendation), namely [API Sidecar](https://github.com/paritytech/substrate-api-sidecar), [Polkadot-JS](https://wiki.polkadot.network/docs/learn-polkadotjs-index), [subxt](https://github.com/paritytech/subxt), and the [Asset Transfer API](https://github.com/paritytech/asset-transfer-api). If you have a technical question or issue about how to use one of the integration tools, please file a GitHub issue so a developer can help.
+  ```bash
+  ./target/release/mythos-node --help
+  ```
 
-##### For node interaction: Substrate API Sidecar
+#### How to interact with the node using Substrate API Sidecar
 
 Parity maintains an RPC client, written in TypeScript, that exposes a limited set of endpoints to interact with a node. It handles the metadata and codec logic so that the user is always dealing with decoded information. It also aggregates information that an infrastructure business may need for accounting and auditing, e.g. transaction fees.
 
-For the case of token transfers, Sidecar can fetch information associated with an specific account's balance:
+You can then attach a Sidecar instance to easily interact with the node by first installing Sidecar:
+
+```bash
+npm install @substrate/api-sidecar
+# OR
+yarn add @substrate/api-sidecar
+```
+
+And then running the service within the local directory with:
+
+```bash
+export SAS_LOG_WRITE=true # to keep logs in a logs.log file
+export SAS_LOG_WRITE_PATH:<path/to/file> # Specifies the path to write the log files. Default will be where the package is installed.
+export SAS_SUBSTRATE_URL=<Mythos-Node-RPC-Port> # URL to which the RPC proxy will attempt to connect to
+node_modules/.bin/substrate-api-sidecar
+```
+
+As an example, for the case of token transfers, Sidecar can fetch information associated with an specific account's balance (http://localhost:8080//accounts/{accountId}/balance-info):
 
 ```json
 {
@@ -90,6 +97,27 @@ Sidecar can also submit transactions to the node it's connected to. For this we 
 ```
 
 You can find more information about Sidecar in its [documentation](https://paritytech.github.io/substrate-api-sidecar/dist/).
+
+## MYTH Token transfers
+
+Mythos Parachain's native token is **MYTH**, handled by the [`pallet_balances`](https://docs.rs/pallet-balances/latest/pallet_balances/), and is transferred as any other substrate based chain's native token. MYTH Token has 18 decimals and its existential deposit (the amount of tokens an account must holde before being _reaped_) is 0.001 MYTH.
+
+As the Mythos Parachain uses an instance of the `pallet_balances`, its token is handled by the same calls as, for example, DOT, those being:
+
+- `transfer_keep_alive`, which has in place checks to only transfer an amount that leaves at least the Existential Deposit in the sender's account.
+- `transfer_allow_death` which does not have the Existential Deposit's checks as the previous call.
+- `transfer_all` which transfers the total balance of an account, causing the account to be reaped.
+
+### Transfer Monitoring
+
+#### Monitoring of MYTH deposits
+
+Currently, MYTH tokens can be sent and received using the calls mentioned previously, and to keep track of the completion of MYTH transfers the service providers need to monitor local transfers and corresponding `balances (Transfer)` event. This event has the fields `from`, `to` and `amount` indicating the origin account, destination account and amount transferred. This event is followed by either `system (ExtrinsicSuccess)` or by `system (ExtrinsicFailed)`, the latter of which in turn has a field `dispatch_error` with the information regarding the reason behind the transfer failure.
+
+#### Relevant tooling
+
+The Mythos Parachain will come with almost the same tooling suite [provided for the Relay Chain](https://wiki.polkadot.network/docs/build-integration#recommendation), namely [API Sidecar](https://github.com/paritytech/substrate-api-sidecar), [Polkadot-JS](https://wiki.polkadot.network/docs/learn-polkadotjs-index), [subxt](https://github.com/paritytech/subxt), and the [Asset Transfer API](https://github.com/paritytech/asset-transfer-api). If you have a technical question or issue about how to use one of the integration tools, please file a GitHub issue so a developer can help.
+
 
 ##### For transaction construction
 
