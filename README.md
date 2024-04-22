@@ -110,11 +110,15 @@ As the Mythos Parachain uses an instance of the `pallet_balances`, its token is 
 
 ### Transfer Monitoring
 
-#### Monitoring of MYTH deposits
+#### Monitoring of local MYTH deposits
 
 Currently, MYTH tokens can be sent and received using the calls mentioned previously, and to keep track of the completion of MYTH transfers the service providers need to monitor local transfers and corresponding `balances (Transfer)` event. This event has the fields `from`, `to` and `amount` indicating the origin account, destination account and amount transferred. This event is followed by either `system (ExtrinsicSuccess)` or by `system (ExtrinsicFailed)`, the latter of which in turn has a field `dispatch_error` with the information regarding the reason behind the transfer failure.
 
-#### Relevant tooling
+#### Monitoring of cross-chain MYTH deposits
+
+Service providers may be interested to provide cross-chain deposits too, this will allow their users to make deposits to their system from other parachains in the Polkadot ecosystem (for example, [Polkadot Asset Hub](https://wiki.polkadot.network/docs/build-integrate-assets)) with a XCM transfer. In these cases, the event emitted when processing the transfer is the `balances(Deposit) event. This event has the fields `who` and `amount` indicating the destination account and amount transferred.
+
+### Relevant tooling
 
 The Mythos Parachain will come with almost the same tooling suite [provided for the Relay Chain](https://wiki.polkadot.network/docs/build-integration#recommendation), namely [API Sidecar](https://github.com/paritytech/substrate-api-sidecar), [Polkadot-JS](https://wiki.polkadot.network/docs/learn-polkadotjs-index), [subxt](https://github.com/paritytech/subxt), and the [Asset Transfer API](https://github.com/paritytech/asset-transfer-api). If you have a technical question or issue about how to use one of the integration tools, please file a GitHub issue so a developer can help.
 
