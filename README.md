@@ -116,7 +116,7 @@ Currently, MYTH tokens can be sent and received using the calls mentioned previo
 
 #### Monitoring of cross-chain MYTH deposits
 
-Service providers may be interested to provide cross-chain deposits too, this will allow their users to make deposits to their system from other parachains in the Polkadot ecosystem (for example, [Polkadot Asset Hub](https://wiki.polkadot.network/docs/build-integrate-assets)) with a XCM transfer. In these cases, the event emitted when processing the transfer is the `balances(Deposit) event. This event has the fields `who` and `amount` indicating the destination account and amount transferred.
+Service providers may be interested to provide cross-chain deposits too, this will allow their users to make deposits to their system from other parachains in the Polkadot ecosystem (for example, [Polkadot Asset Hub](https://wiki.polkadot.network/docs/build-integrate-assets)) with a XCM transfer. In these cases, the event emitted when processing the transfer is the `balances(Deposit)` event. This event has the fields `who` and `amount` indicating the destination account and amount transferred.
 
 ### Relevant tooling
 
