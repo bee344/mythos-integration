@@ -96,6 +96,8 @@ Sidecar can also submit transactions to the node it's connected to. For this we 
 }
 ```
 
+*Note that the transaction hash is [NOT a unique identifier in the Polkadot ecosystem](https://wiki.polkadot.network/docs/build-protocol-info#unique-identifiers-for-extrinsics).
+
 You can find more information about Sidecar in its [documentation](https://paritytech.github.io/substrate-api-sidecar/dist/).
 
 ## MYTH Token transfers
@@ -123,13 +125,17 @@ Service providers may be interested to provide cross-chain deposits too, this wi
 The Mythos Parachain will come with almost the same tooling suite [provided for the Relay Chain](https://wiki.polkadot.network/docs/build-integration#recommendation), namely [API Sidecar](https://github.com/paritytech/substrate-api-sidecar), [Polkadot-JS](https://wiki.polkadot.network/docs/learn-polkadotjs-index), [subxt](https://github.com/paritytech/subxt), and the [Asset Transfer API](https://github.com/paritytech/asset-transfer-api). If you have a technical question or issue about how to use one of the integration tools, please file a GitHub issue so a developer can help.
 
 
-##### For transaction construction
+#### For transaction construction
 
 Several tools are available to construct transactions for Polkadot Asset Hub. For example, subxt provides libraries in Rust with great flexibility for transaction construction, whereas Asset Transfer API is focused on offering a simplified interface to build token transfers.
 
-- **Examples**
+##### transaction signature
 
-Examples on how to build transactions to manage foreign assets can be located in their following directories:
+Note that Mythos parachain uses the same account format as Ethereum, which implies it uses ECDSA as signature scheme unlike other chains in the Polkadot Ecosystem. For example, if using Polkadot-JS for keys management, the keyring type has to be set as `ethereum`, as it can be seen in the examples below.
+
+##### Examples
+
+Examples on how to build transactions for Mythos parachain can be located in their following directories:
 
 - [Polkadot-JS](/polkadot-js-example/)
 - [Subxt](/subxt-example/)
